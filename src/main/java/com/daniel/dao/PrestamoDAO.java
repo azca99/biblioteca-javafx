@@ -31,7 +31,7 @@ public class PrestamoDAO {
             JOIN socios s ON s.id_socio = p.id_socio
             LEFT JOIN prestamos_libro pl ON pl.id_prestamo = p.id_prestamo
             LEFT JOIN libros l ON l.id_libro = pl.id_libro
-            ORDER BY p.id_prestamo DESC
+            ORDER BY p.id_prestamo ASC
         """;
         List<Prestamo> lista = new ArrayList<>();
 
@@ -277,7 +277,7 @@ public class PrestamoDAO {
             params.add("%" + textoLibro.trim() + "%");
         }
 
-        sql.append(" ORDER BY p.id_prestamo DESC");
+        sql.append(" ORDER BY p.id_prestamo ASC");
 
         List<Prestamo> lista = new ArrayList<>();
 

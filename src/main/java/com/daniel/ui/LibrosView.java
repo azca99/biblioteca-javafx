@@ -519,9 +519,12 @@ public class LibrosView {
         TableColumn<Libro, String> colCategoria = new TableColumn<>("Categoría");
         colCategoria.setCellValueFactory(new PropertyValueFactory<>("categoriaNombre"));
 
+        TableColumn<Libro, String> colIsbn = new TableColumn<>("ISBN");
+        colIsbn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+
         tabla.getColumns().addAll(
-                colId, colTitulo, colIdioma, colPaginas, colDisponible, colFecha, colEditorial, colCategoria
-        );
+                colId, colTitulo, colIdioma, colPaginas, colDisponible, colFecha,
+                colEditorial, colCategoria, colIsbn);
 
         // Cargar datos desde BD
         refrescarTabla();
