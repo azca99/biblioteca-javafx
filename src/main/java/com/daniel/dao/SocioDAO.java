@@ -12,7 +12,7 @@ public class SocioDAO {
 
     // READ: socios de la BD
     public List<Socio> findAll() {
-        String sql = "SELECT id_socio, dni, nombre, apellidos, email, telefono, activo, fecha_alta FROM socios"; // Consulta SQL
+        String sql = "SELECT id_socio, dni, nombre, apellidos, email, telefono, activo, fecha_alta, direccion, codigo_postal FROM socios"; // Consulta SQL
         List<Socio> socios = new ArrayList<>();
 
         try (Connection con = DB.getConnection(); // Conexión con BD
@@ -30,18 +30,20 @@ public class SocioDAO {
                 s.setEmail(rs.getString("email"));
                 s.setTelefono(rs.getString("telefono"));
                 s.setActivo(rs.getBoolean("activo"));
-
                 // Pasar fecha SQL a LocalDate
                 Date fechaSql = rs.getDate("fecha_alta");
                 if (fechaSql != null) {
                     LocalDate fechaAlta = fechaSql.toLocalDate();
                     s.setFechaAlta(fechaAlta);
                 }
+                s.setDireccion(rs.getString("direccion"));
+                s.setCodigoPostal(rs.getString("codigo_postal"));
 
-                socios.add(s); // Añadir socio a la lista
+                // Añadir socio a la lista
+                socios.add(s);
             }
-
-        } catch (SQLException e) { // Manejo de errores
+        // Manejo de errores
+        } catch (SQLException e) {
             System.err.println("Error al leer socios");
             e.printStackTrace();
         }
@@ -57,11 +59,13 @@ public class SocioDAO {
         if (s.getDni() == null || s.getDni().trim().isEmpty()) return -1;
         if (s.getNombre() == null || s.getNombre().trim().isEmpty()) return -1;
         if (s.getApellidos() == null || s.getApellidos().trim().isEmpty()) return -1;
+        if (s.getDireccion() == null || s.getDireccion().trim().isEmpty()) return -1;
+        if (s.getCodigoPostal() == null || s.getCodigoPostal().trim().isEmpty()) return -1;
 
         // SQL para el PreparedStatement
         String sql = """
-        INSERT INTO socios (dni, nombre, apellidos, email, telefono, activo, fecha_alta)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO socios (dni, nombre, apellidos, email, telefono, activo, fecha_alta, direccion, codigo_postal)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
 
         // Probar la conexión
@@ -75,13 +79,14 @@ public class SocioDAO {
             ps.setString(4, s.getEmail());
             ps.setString(5, s.getTelefono());
             ps.setBoolean(6, s.isActivo());
-
             // LocalDate -> fecha sql
             if (s.getFechaAlta() != null) {
                 ps.setDate(7, java.sql.Date.valueOf(s.getFechaAlta()));
             } else {
                 ps.setDate(7, null);
             }
+            ps.setString(8, s.getDireccion());
+            ps.setString(9, s.getCodigoPostal());
 
             // Ejecutar sentencia INSERT en SQL
             int filas = ps.executeUpdate();
@@ -136,41 +141,41 @@ public class SocioDAO {
     // UPDATE socio
     public boolean update(Socio s) {
 
-        // 1) Validaciones mínimas
+        // Validaciones mínimas
         if (s == null) return false;
         if (s.getIdSocio() <= 0) return false; // sin id no sabemos qué fila actualizar
 
         String sql = """
         UPDATE socios
-        SET dni = ?, nombre = ?, apellidos = ?, email = ?, telefono = ?, activo = ?, fecha_alta = ?
+        SET dni = ?, nombre = ?, apellidos = ?, email = ?, telefono = ?, activo = ?, fecha_alta = ?, direccion = ?, codigo_postal = ?
         WHERE id_socio = ?
         """;
 
         try (Connection con = DB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            // 2) Rellenar los ? del SET (en el mismo orden)
+            // Rellenar los ? del SET (en el mismo orden)
             ps.setString(1, s.getDni());
             ps.setString(2, s.getNombre());
             ps.setString(3, s.getApellidos());
             ps.setString(4, s.getEmail());
             ps.setString(5, s.getTelefono());
             ps.setBoolean(6, s.isActivo());
-
-            // 3) Fecha (LocalDate -> java.sql.Date)
+            // Fecha (LocalDate -> java.sql.Date)
             if (s.getFechaAlta() != null) {
                 ps.setDate(7, java.sql.Date.valueOf(s.getFechaAlta()));
             } else {
                 ps.setDate(7, null);
             }
+            ps.setString(8, s.getDireccion());
+            ps.setString(9, s.getCodigoPostal());
+            // El último ? es el id del WHERE
+            ps.setInt(10, s.getIdSocio());
 
-            // 4) El último ? es el id del WHERE
-            ps.setInt(8, s.getIdSocio());
-
-            // 5) Ejecutar UPDATE
+            // Ejecutar UPDATE
             int filas = ps.executeUpdate();
 
-            // 6) Devuelve true si actualizó 1 fila
+            // Devuelve true si actualizó 1 fila
             return filas == 1;
 
         } catch (SQLException e) {
@@ -189,7 +194,7 @@ public class SocioDAO {
     public List<Socio> findByFilters(String dni, String textoNombreApellidos) {
 
         StringBuilder sql = new StringBuilder("""
-        SELECT id_socio, dni, nombre, apellidos, email, telefono, activo, fecha_alta
+        SELECT id_socio, dni, nombre, apellidos, email, telefono, activo, fecha_alta, direccion, codigo_postal
         FROM socios
         WHERE 1=1
         """);
@@ -232,6 +237,8 @@ public class SocioDAO {
                     s.setEmail(rs.getString("email"));
                     s.setTelefono(rs.getString("telefono"));
                     s.setActivo(rs.getBoolean("activo"));
+                    s.setDireccion(rs.getString("direccion"));
+                    s.setCodigoPostal(rs.getString("codigo_postal"));
 
                     java.sql.Date fecha = rs.getDate("fecha_alta");
                     if (fecha != null) {

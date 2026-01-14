@@ -13,6 +13,8 @@ public class Socio {
     private String telefono;
     private boolean activo;
     private LocalDate fechaAlta;
+    private String direccion;
+    private String codigoPostal;
 
     // Constructor vacío (crea un socio “en blanco”)
     public Socio() {
@@ -20,7 +22,7 @@ public class Socio {
 
     // Constructor completo (crea un socio con todos sus datos)
     public Socio(int idSocio, String dni, String nombre, String apellidos,
-                 String email, String telefono, boolean activo, LocalDate fechaAlta) {
+                 String email, String telefono, boolean activo, LocalDate fechaAlta, String direccion, String codigoPostal) {
         this.idSocio = idSocio;
         this.dni = dni;
         this.nombre = nombre;
@@ -29,6 +31,8 @@ public class Socio {
         this.telefono = telefono;
         this.activo = activo;
         this.fechaAlta = fechaAlta;
+        this.direccion = direccion;
+        this.codigoPostal = codigoPostal;
     }
 
     // Getters y Setters
@@ -92,9 +96,15 @@ public class Socio {
         return fechaAlta;
     }
 
-    public void setFechaAlta(LocalDate fechaAlta) {
-        this.fechaAlta = fechaAlta;
-    }
+    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
+
+    public String getDireccion() { return direccion; }
+
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public String getCodigoPostal() { return codigoPostal; }
+
+    public void setCodigoPostal(String codigoPostal) { this.codigoPostal = codigoPostal; }
 
     // Imprimir un socio fácil en consola
     @Override
@@ -106,8 +116,10 @@ public class Socio {
                 ", apellidos='" + apellidos + '\'' +
                 ", email='" + email + '\'' +
                 ", telefono='" + telefono + '\'' +
-                ", activo=" + activo +
-                ", fechaAlta=" + fechaAlta +
+                ", activo=" + activo + '\'' +
+                ", fechaAlta=" + fechaAlta + '\'' +
+                ", dirección=" + direccion + '\'' +
+                ", código postal=" + codigoPostal + '\'' +
                 '}';
     }
 }

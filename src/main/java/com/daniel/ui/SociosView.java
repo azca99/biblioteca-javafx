@@ -69,6 +69,8 @@ public class SociosView {
         TextField txtApellidos = new TextField();
         TextField txtEmail = new TextField();
         TextField txtTelefono = new TextField();
+        TextField txtDireccion = new TextField();
+        TextField txtCodigoPostal = new TextField();
         DatePicker dpFechaAlta = new DatePicker(LocalDate.now());
         CheckBox chkActivo = new CheckBox("Activo");
         chkActivo.setSelected(true);
@@ -94,10 +96,16 @@ public class SociosView {
         grid.add(new Label("Teléfono:"), 0, 4);
         grid.add(txtTelefono, 1, 4);
 
-        grid.add(new Label("Fecha alta:"), 0, 5);
-        grid.add(dpFechaAlta, 1, 5);
+        grid.add(new Label("Dirección:"), 0, 5);
+        grid.add(txtDireccion, 1, 5);
 
-        grid.add(chkActivo, 1, 6);
+        grid.add(new Label("Código Postal:"), 0, 6);
+        grid.add(txtCodigoPostal, 1, 6);
+
+        grid.add(new Label("Fecha alta:"), 0, 7);
+        grid.add(dpFechaAlta, 1, 7);
+
+        grid.add(chkActivo, 1, 8);
 
         // Poner el contenido en el interior del diálogo
         dialog.getDialogPane().setContent(grid);
@@ -112,8 +120,11 @@ public class SociosView {
                 String apellidos = txtApellidos.getText().trim();
                 String email = txtEmail.getText().trim();
                 String telefono = txtTelefono.getText().trim();
+                String direccion = txtDireccion.getText().trim();
+                String codigoPostal = txtCodigoPostal.getText().trim();
 
-                if (dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || email.isEmpty() || telefono.isEmpty()) {
+                if (dni.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || email.isEmpty()
+                        || telefono.isEmpty() || direccion.isEmpty() || codigoPostal.isEmpty()) {
                     Alert aviso = new Alert(Alert.AlertType.WARNING);
                     aviso.setTitle("Datos incompletos");
                     aviso.setHeaderText(null);
@@ -135,6 +146,12 @@ public class SociosView {
                     return;
                 }
 
+                if (!codigoPostal.matches("\\d{5}")) {
+                    new Alert(Alert.AlertType.WARNING, "Código postal debe tener 5 dígitos (ej: 35001).").showAndWait();
+                    setEstado("Validación: código postal no válido");
+                    return;
+                }
+
                 // Crear el objeto Socio con lo que el usuario escribió
                 Socio nuevo = new Socio();
                 nuevo.setDni(dni);
@@ -144,6 +161,8 @@ public class SociosView {
                 nuevo.setTelefono(telefono);
                 nuevo.setActivo(chkActivo.isSelected());
                 nuevo.setFechaAlta(dpFechaAlta.getValue());
+                nuevo.setDireccion(direccion);
+                nuevo.setCodigoPostal(codigoPostal);
 
                 // Insertar en BD y refrescar
                 int idGenerado = socioDAO.insert(nuevo);
@@ -189,6 +208,8 @@ public class SociosView {
         TextField txtApellidos = new TextField(socio.getApellidos());
         TextField txtEmail = new TextField(socio.getEmail());
         TextField txtTelefono = new TextField(socio.getTelefono());
+        TextField txtDireccion = new TextField(socio.getDireccion());
+        TextField txtCodigoPostal = new TextField(socio.getCodigoPostal());
 
         DatePicker dpFechaAlta = new DatePicker(socio.getFechaAlta());
         CheckBox chkActivo = new CheckBox("Activo");
@@ -215,10 +236,16 @@ public class SociosView {
         grid.add(new Label("Teléfono:"), 0, 4);
         grid.add(txtTelefono, 1, 4);
 
-        grid.add(new Label("Fecha alta:"), 0, 5);
-        grid.add(dpFechaAlta, 1, 5);
+        grid.add(new Label("Dirección:"), 0, 5);
+        grid.add(txtDireccion, 1, 5);
 
-        grid.add(chkActivo, 1, 6);
+        grid.add(new Label("Código postal:"), 0, 6);
+        grid.add(txtCodigoPostal, 1, 6);
+
+        grid.add(new Label("Fecha alta:"), 0, 7);
+        grid.add(dpFechaAlta, 1, 7);
+
+        grid.add(chkActivo, 1, 8);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -227,13 +254,33 @@ public class SociosView {
             if (respuesta == btnGuardar) {
 
                 // Validación mínima
-                if (txtDni.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty() || txtApellidos.getText().trim().isEmpty() || txtEmail.getText().trim().isEmpty() || txtTelefono.getText().trim().isEmpty()) {
+                if (txtDni.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty() || txtApellidos.getText().trim().isEmpty()
+                        || txtEmail.getText().trim().isEmpty() || txtTelefono.getText().trim().isEmpty()
+                        || txtDireccion.getText().trim().isEmpty() || txtCodigoPostal.getText().trim().isEmpty()) {
                     Alert aviso = new Alert(Alert.AlertType.WARNING);
                     aviso.setTitle("Datos incompletos");
                     aviso.setHeaderText(null);
                     aviso.setContentText("DNI, Nombre, Apellidos, Email y Teléfono son obligatorios.");
                     aviso.showAndWait();
                     setEstado("Validación: faltan campos obligatorios");
+                    return;
+                }
+
+                if (!txtEmail.getText().trim().contains("@")) {
+                    new Alert(Alert.AlertType.WARNING, "Email no válido.").showAndWait();
+                    setEstado("Validación: email no válido");
+                    return;
+                }
+
+                if (!txtTelefono.getText().trim().matches("\\d+")) {
+                    new Alert(Alert.AlertType.WARNING, "Teléfono debe contener solo números.").showAndWait();
+                    setEstado("Validación: teléfono no válido");
+                    return;
+                }
+
+                if (!txtCodigoPostal.getText().trim().matches("\\d{5}")) {
+                    new Alert(Alert.AlertType.WARNING, "Código postal debe tener 5 dígitos (ej: 35001).").showAndWait();
+                    setEstado("Validación: código postal no válido");
                     return;
                 }
 
@@ -245,6 +292,8 @@ public class SociosView {
                 socio.setTelefono(txtTelefono.getText().trim());
                 socio.setFechaAlta(dpFechaAlta.getValue());
                 socio.setActivo(chkActivo.isSelected());
+                socio.setDireccion(txtDireccion.getText().trim());
+                socio.setCodigoPostal(txtCodigoPostal.getText().trim());
 
                 boolean ok = socioDAO.update(socio);
 
@@ -323,7 +372,14 @@ public class SociosView {
         TableColumn<Socio, LocalDate> colFechaAlta = new TableColumn<>("Fecha alta");
         colFechaAlta.setCellValueFactory(new PropertyValueFactory<>("fechaAlta"));
 
-        tabla.getColumns().addAll(colId, colDni, colNombre, colApellidos, colActivo, colEmail, colTelefono, colFechaAlta);
+        TableColumn<Socio, String> colDireccion = new TableColumn<>("Dirección");
+        colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+
+        TableColumn<Socio, String> colCodigoPostal = new TableColumn<>("C.P.");
+        colCodigoPostal.setCellValueFactory(new PropertyValueFactory<>("codigoPostal"));
+
+        tabla.getColumns().addAll(colId, colDni, colNombre, colApellidos, colActivo,
+                colEmail, colTelefono, colFechaAlta, colDireccion, colCodigoPostal);
 
         // Cargar datos desde BD
         datos.setAll(socioDAO.findAll());
