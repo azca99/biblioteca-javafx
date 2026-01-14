@@ -2,6 +2,7 @@ package com.daniel.ui;
 
 import com.daniel.dao.PrestamoDAO;
 import com.daniel.model.Prestamo;
+import com.daniel.util.AppLog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -29,6 +30,7 @@ public class PrestamosView {
     private final Button btnEditar = new Button("Editar");
     private final Button btnEliminar = new Button("Eliminar");
     private final Button btnRefrescar = new Button("Refrescar");
+    private final Button btnVerLog = new Button("Ver log");
 
     // Campos de búsqueda (arriba)
     private final TextField txtBuscarSocio = new TextField();
@@ -74,6 +76,7 @@ public class PrestamosView {
                 prestamoDAO.deleteById(p.getIdPrestamo());
                 refrescarTabla();
                 setEstado("Eliminado correctamente");
+                AppLog.info("PRESTAMOS/DELETE", "Eliminado préstamo ID=" + p.getIdPrestamo());
             } else {
                 setEstado("Eliminación cancelada");
             }
@@ -237,6 +240,8 @@ public class PrestamosView {
                 if (idGenerado > 0) {
                     refrescarTabla();
                     setEstado("Creado correctamente (ID " + idGenerado + ")");
+                    AppLog.info("PRESTAMOS/INSERT", "Creado préstamo ID=" + idGenerado + " SocioID=" + nuevo.getIdSocio() + " LibroID=" + nuevo.getIdLibro());
+
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Error");
@@ -408,6 +413,7 @@ public class PrestamosView {
                 if (ok) {
                     refrescarTabla();
                     setEstado("Actualizado correctamente");
+                    AppLog.info("PRESTAMOS/UPDATE", "Actualizado préstamo ID=" + prestamo.getIdPrestamo() + " Estado=" + prestamo.getEstado());
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Error");
@@ -470,7 +476,7 @@ public class PrestamosView {
         barraBusqueda.setPadding(new Insets(10));
 
         // Barra HBox. Espaciado y Padding 10px
-        HBox barraBotones = new HBox(10, btnNuevo, btnEditar, btnEliminar, btnRefrescar);
+        HBox barraBotones = new HBox(10, btnNuevo, btnEditar, btnEliminar, btnRefrescar, btnVerLog);
         barraBotones.setPadding(new Insets(10));
 
         // Barra de estado (footer)
@@ -494,6 +500,22 @@ public class PrestamosView {
         btnNuevo.setOnAction(e -> mostrarDialogoNuevoPrestamo());
         btnEditar.setOnAction(e -> editarPrestamoSeleccionado());
         btnEliminar.setOnAction(e -> eliminarPrestamoSeleccionado());
+
+        // Función de VerLog
+        btnVerLog.setOnAction(e -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("Log de operaciones");
+            a.setHeaderText(null);
+
+            TextArea ta = new TextArea(AppLog.readAll());
+            ta.setEditable(false);
+            ta.setWrapText(false);
+            ta.setPrefWidth(800);
+            ta.setPrefHeight(500);
+
+            a.getDialogPane().setContent(ta);
+            a.showAndWait();
+        });
 
         // Funciones de búsqueda
         btnBuscar.setOnAction(e -> {

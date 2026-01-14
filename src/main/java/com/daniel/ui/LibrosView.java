@@ -2,6 +2,7 @@ package com.daniel.ui;
 
 import com.daniel.dao.LibroDAO;
 import com.daniel.model.Libro;
+import com.daniel.util.AppLog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -28,6 +29,7 @@ public class LibrosView {
     private final Button btnEditar = new Button("Editar");
     private final Button btnEliminar = new Button("Eliminar");
     private final Button btnRefrescar = new Button("Refrescar");
+    private final Button btnVerLog = new Button("Ver log");
 
     // Campos de búsqueda (arriba)
     private final TextField txtBuscarTitulo = new TextField();
@@ -243,6 +245,7 @@ public class LibrosView {
                 if (idGenerado > 0) {
                     refrescarTabla();
                     setEstado("Creado correctamente (ID " + idGenerado + ")");
+                    AppLog.info("LIBROS/INSERT", "Creado libro ID=" + idGenerado + " Titulo=\"" + nuevo.getTitulo() + "\"");
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Error");
@@ -445,6 +448,7 @@ public class LibrosView {
                 if (ok) {
                     refrescarTabla();
                     setEstado("Actualizado correctamente");
+                    AppLog.info("LIBROS/UPDATE", "Actualizado libro ID=" + libro.getIdLibro() + " Titulo=\"" + libro.getTitulo() + "\"");
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Error");
@@ -480,6 +484,7 @@ public class LibrosView {
                 libroDAO.deleteById(l.getIdLibro());
                 refrescarTabla();
                 setEstado("Eliminado correctamente");
+                AppLog.info("LIBROS/DELETE", "Eliminado libro ID=" + l.getIdLibro() + " Titulo=\"" + l.getTitulo() + "\"");
             } else {
                 setEstado("Eliminación cancelada");
             }
@@ -523,7 +528,7 @@ public class LibrosView {
         tabla.setItems(datos);
 
         // Barra HBox. Espaciado y Padding 10px
-        HBox barraBotones = new HBox(10, btnNuevo, btnEditar, btnEliminar, btnRefrescar);
+        HBox barraBotones = new HBox(10, btnNuevo, btnEditar, btnEliminar, btnRefrescar, btnVerLog);
         barraBotones.setPadding(new Insets(10));
 
         // Barra de búsqueda (hasta 2 campos)
@@ -557,6 +562,22 @@ public class LibrosView {
         btnNuevo.setOnAction(e -> mostrarDialogoNuevoLibro());
         btnEditar.setOnAction(e -> editarLibroSeleccionado());
         btnEliminar.setOnAction(e -> eliminarLibroSeleccionado());
+
+        // Función de VerLog
+        btnVerLog.setOnAction(e -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("Log de operaciones");
+            a.setHeaderText(null);
+
+            TextArea ta = new TextArea(AppLog.readAll());
+            ta.setEditable(false);
+            ta.setWrapText(false);
+            ta.setPrefWidth(800);
+            ta.setPrefHeight(500);
+
+            a.getDialogPane().setContent(ta);
+            a.showAndWait();
+        });
 
         // Funciones de búsqueda
         btnBuscar.setOnAction(e -> {

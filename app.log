@@ -1,0 +1,7 @@
+2026-01-14 11:22:58 | INFO | TEST | La app se ha abierto correctamente
+2026-01-14 11:25:56 | INFO | SOCIOS/DELETE | Eliminado socio ID=19
+2026-01-14 11:30:36 | INFO | LIBROS/INSERT | Creado libro ID=14 Titulo="Juana de Arco"
+2026-01-14 11:30:41 | INFO | LIBROS/DELETE | Eliminado libro ID=14 Titulo="Juana de Arco"
+2026-01-14 11:39:33 | INFO | PRESTAMOS/INSERT | Creado préstamo ID=14 SocioID=11 LibroID=6
+2026-01-14 11:39:39 | INFO | PRESTAMOS/DELETE | Eliminado préstamo ID=14
+2026-01-14 12:24:30 | ERROR | PRESTAMOS/INSERT | Error al insertar préstamo (SocioID=34, LibroID=21): (conn=260) Cannot add or update a child row: a foreign key constraint fails (`biblioteca_db`.`prestamos`, CONSTRAINT `fk_prestamos_socios` FOREIGN KEY (`id_socio`) REFERENCES `socios` (`id_socio`) ON UPDATE CASCADE)

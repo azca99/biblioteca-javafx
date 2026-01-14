@@ -2,6 +2,7 @@ package com.daniel.ui;
 
 import com.daniel.dao.SocioDAO;
 import com.daniel.model.Socio;
+import com.daniel.util.AppLog;
 import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,6 +33,7 @@ public class SociosView {
     private final Button btnEditar = new Button("Editar");
     private final Button btnEliminar = new Button("Eliminar");
     private final Button btnRefrescar = new Button("Refrescar");
+    private final Button btnVerLog = new Button("Ver log");
 
     // Campos de búsqueda (arriba)
     private final TextField txtBuscarDni = new TextField();
@@ -149,6 +151,7 @@ public class SociosView {
                 if (idGenerado > 0) {
                     refrescarTabla();
                     setEstado("Creado correctamente (ID " + idGenerado + ")");
+                    AppLog.info("SOCIOS/INSERT", "Creado socio ID=" + idGenerado + " DNI=" + dni);
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Error");
@@ -248,6 +251,7 @@ public class SociosView {
                 if (ok) {
                     refrescarTabla();
                     setEstado("Actualizado correctamente");
+                    AppLog.info("SOCIOS/UPDATE", "Actualizado socio ID=" + socio.getIdSocio());
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
                     error.setTitle("Error");
@@ -284,6 +288,7 @@ public class SociosView {
                 socioDAO.deleteById(s.getIdSocio());
                 refrescarTabla();
                 setEstado("Eliminado correctamente");
+                AppLog.info("SOCIOS/DELETE", "Eliminado socio ID=" + s.getIdSocio());
             } else {
                 setEstado("Eliminación cancelada");
             }
@@ -335,7 +340,7 @@ public class SociosView {
         barraBusqueda.setPadding(new Insets(10));
 
         // Barra HBox. Espaciado 10 Padding 10
-        HBox barraBotones = new HBox(10, btnNuevo, btnEditar, btnEliminar, btnRefrescar);
+        HBox barraBotones = new HBox(10, btnNuevo, btnEditar, btnEliminar, btnRefrescar, btnVerLog);
         barraBotones.setPadding(new Insets(10));
 
         // Barra de estado (footer)
@@ -359,6 +364,22 @@ public class SociosView {
         btnNuevo.setOnAction(e -> mostrarDialogoNuevoSocio());
         btnEditar.setOnAction(e -> editarSocioSeleccionado());
         btnEliminar.setOnAction(e -> eliminarSocioSeleccionado());
+
+        // Función de VerLog
+        btnVerLog.setOnAction(e -> {
+            Alert a = new Alert(Alert.AlertType.INFORMATION);
+            a.setTitle("Log de operaciones");
+            a.setHeaderText(null);
+
+            TextArea ta = new TextArea(AppLog.readAll());
+            ta.setEditable(false);
+            ta.setWrapText(false);
+            ta.setPrefWidth(800);
+            ta.setPrefHeight(500);
+
+            a.getDialogPane().setContent(ta);
+            a.showAndWait();
+        });
 
         // Funciones de búsqueda
         btnBuscar.setOnAction(e -> {
