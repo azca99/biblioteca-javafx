@@ -2,7 +2,7 @@ package com.daniel.dao;
 
 import com.daniel.db.DB;
 import com.daniel.model.Prestamo;
-
+import com.daniel.util.AppLog;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
@@ -160,6 +160,11 @@ public class PrestamoDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al insertar préstamo");
+            AppLog.error(
+                    "PRESTAMOS/INSERT",
+                    "Error al insertar préstamo (SocioID=" + (p != null ? p.getIdSocio() : "null") +
+                            ", LibroID=" + (p != null ? p.getIdLibro() : "null") + "): " + e.getMessage()
+            );
             e.printStackTrace();
             return -1;
         }
@@ -201,6 +206,11 @@ public class PrestamoDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al actualizar préstamo");
+            AppLog.error(
+                    "PRESTAMOS/UPDATE",
+                    "Error al actualizar préstamo (ID=" + (p != null ? p.getIdPrestamo() : "null") +
+                            ", SocioID=" + (p != null ? p.getIdSocio() : "null") + "): " + e.getMessage()
+            );
             e.printStackTrace();
             return false;
         }
@@ -219,6 +229,10 @@ public class PrestamoDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al borrar préstamo");
+            AppLog.error(
+                    "PRESTAMOS/DELETE",
+                    "Error al borrar préstamo (ID=" + idPrestamo + "): " + e.getMessage()
+            );
             e.printStackTrace();
             return false;
         }

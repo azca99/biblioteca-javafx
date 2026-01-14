@@ -2,7 +2,7 @@ package com.daniel.dao;
 
 import com.daniel.db.DB;
 import com.daniel.model.Socio;
-
+import com.daniel.util.AppLog;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -97,6 +97,11 @@ public class SocioDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al insertar socio");
+            AppLog.error(
+                    "SOCIOS/INSERT",
+                    "Error al insertar socio (DNI=" + (s != null ? s.getDni() : "null") +
+                            ", Email=" + (s != null ? s.getEmail() : "null") + "): " + e.getMessage()
+            );
             e.printStackTrace();
         }
 
@@ -119,6 +124,10 @@ public class SocioDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al borrar socio con id " + idSocio);
+            AppLog.error(
+                    "SOCIOS/DELETE",
+                    "Error al borrar socio (ID=" + idSocio + "): " + e.getMessage()
+            );
             e.printStackTrace();
             return false;
         }
@@ -166,6 +175,11 @@ public class SocioDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al actualizar socio con id " + (s != null ? s.getIdSocio() : "?"));
+            AppLog.error(
+                    "SOCIOS/UPDATE",
+                    "Error al actualizar socio (ID=" + (s != null ? s.getIdSocio() : "null") +
+                            ", DNI=" + (s != null ? s.getDni() : "null") + "): " + e.getMessage()
+            );
             e.printStackTrace();
             return false;
         }

@@ -2,7 +2,7 @@ package com.daniel.dao;
 
 import com.daniel.db.DB;
 import com.daniel.model.Libro;
-
+import com.daniel.util.AppLog;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +106,11 @@ public class LibroDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al insertar libro");
+            AppLog.error(
+                    "LIBROS/INSERT",
+                    "Error al insertar libro (ISBN=" + (l != null ? l.getIsbn() : "null") +
+                            ", Titulo=" + (l != null ? l.getTitulo() : "null") + "): " + e.getMessage()
+            );
             e.printStackTrace();
         }
 
@@ -128,6 +133,10 @@ public class LibroDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al borrar libro con id " + idLibro);
+            AppLog.error(
+                    "LIBROS/DELETE",
+                    "Error al borrar libro (ID=" + idLibro + "): " + e.getMessage()
+            );
             e.printStackTrace();
             return false;
         }
@@ -177,6 +186,11 @@ public class LibroDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al actualizar libro con id " + (l != null ? l.getIdLibro() : "?"));
+            AppLog.error(
+                    "LIBROS/UPDATE",
+                    "Error al actualizar libro (ID=" + (l != null ? l.getIdLibro() : "null") +
+                            ", ISBN=" + (l != null ? l.getIsbn() : "null") + "): " + e.getMessage()
+            );
             e.printStackTrace();
             return false;
         }
