@@ -32,6 +32,7 @@ build/
 .vscode/
 
 ### Maven ###
+target/
 out/
 
 ### OS ###
