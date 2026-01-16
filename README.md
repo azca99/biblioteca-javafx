@@ -4,8 +4,6 @@
 
 Aplicación de escritorio desarrollada en Java utilizando JavaFX y una base de datos MariaDB.
 
-El proyecto forma parte de la asignatura Programación de un Grado Superior.
-
 
 
 La aplicación permite gestionar una biblioteca mediante tres entidades principales:
@@ -42,6 +40,8 @@ Para ejecutar la aplicación es necesario disponer de:
 
 \- MariaDB
 
+\- DBeaver
+
 \- Un IDE compatible con Java (recomendado IntelliJ IDEA)
 
 
@@ -54,9 +54,13 @@ La aplicación utiliza una base de datos MariaDB llamada `biblioteca\_db`.
 
 Antes de ejecutar la aplicación es necesario:
 
-1\. Crear la base de datos.
+1\. Abrir DBeaver y conectarse a MariaDB
 
-2\. Ejecutar el script SQL proporcionado (`biblioteca.sql`) para crear las tablas.
+2\. Botón derecho sobre la conexión -> SQL Editor
+
+3\. Abrir el archivo dump-biblioteca_db-202601151347.sql
+
+4\. Ejecutar el script
 
 
 
@@ -98,4 +102,4 @@ Estos valores deben ajustarse según el entorno local del usuario.
 
 \### Desde ejecutable run.bat
 
-En la carpeta dist ejecutar el fichero run.bat
+En la carpeta \dist ejecutar el fichero run.bat
