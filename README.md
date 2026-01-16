@@ -84,23 +84,18 @@ Estos valores deben ajustarse según el entorno local del usuario.
 
 
 
-\## Ejecución del proyecto
+\## Ejecución de la aplicación
 
 \### Desde IntelliJ IDEA
 
-1\. Importar el proyecto como proyecto Maven.
+1\. Abrir ventana de maven.
 
-2\. Esperar a que se descarguen las dependencias.
+2\. Entrar en plugings.
 
-3\. Ejecutar la clase `MainApp`.
+3\. Ejecutar el plugin javafx:run.
 
 
 
-\### Desde línea de comandos
+\### Desde ejecutable run.bat
 
-Situarse en la carpeta raíz del proyecto y ejecutar:
-
-```bash
-
-mvn clean javafx:run
-
+En la carpeta dist ejecutar el fichero run.bat
